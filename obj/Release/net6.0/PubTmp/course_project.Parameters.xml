@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<parameters>
-  <parameter name="IIS Web Application Name" description="" value="content-reviews" tags="IisApp">
-    <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\C-sharp\ lessons\\Itransition\ internship\\course_project\\course_project\\obj\\Release\\net6\.0\\PubTmp\\Out\\$" />
-  </parameter>
-  <parameter name="course_project.Models.ApplicationDbContext" description="" value="Data Source=tcp:content-reviewsdbserver.database.windows.net,1433;Initial Catalog=content-reviews_db;User Id=sqladmin@content-reviewsdbserver;Password=Sqlserver101" tags="dbfullsql">
-    <parameterEntry kind="ProviderPath" scope="dbfullsql" match="^C:\\C-sharp\ lessons\\Itransition\ internship\\course_project\\course_project\\obj\\Release\\net6\.0\\PubTmp\\EFSQLScripts\\course_project\.Models\.ApplicationDbContext\.sql$" />
-  </parameter>
-</parameters>
