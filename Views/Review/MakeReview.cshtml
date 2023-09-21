@@ -1,0 +1,135 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    var cultureItems = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "en-US", Text = "English" },
+        new SelectListItem { Value = "ru-RU", Text = "Русский" }
+    };
+}
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = @Localizer["AddChangeReview"];
+}
+@model course_project.Models.Review
+
+<body>
+    <div class="container">
+        @if (Model == null)
+        {
+            <h1>@Localizer["CreateNewReview"]</h1>
+        }
+        else if (User.IsInRole("Admin") && @Model.ContentName == "")
+        {
+            <h1>@Localizer["AddReviewOnBehalfOfUser"] @Model.Author</h1>
+        }
+        else
+        {
+            <h1>@Localizer["EditReview"]</h1>
+        }
+        <form action="@(Model == null ? "/Review/Add" : "/Review/ChangeReviewData")" method="POST">
+            <div class="form-group">
+                <label for="category">@Localizer["Category"]:</label>
+                
+                    <select asp-for="Category" class="form-control">
+                    <option value="Video">@Localizer["MovieSeries"]</option>
+                    <option value="Book">@Localizer["Book"]</option>
+                    <option value="Game">@Localizer["Game"]</option>
+                </select>
+                
+            </div>
+            <div class="form-group">
+                <label for="title">@Localizer["Title"]:</label>
+                <input type="text" class="form-control" id="title" asp-for="ContentName">
+            </div>
+            <div class="form-group">
+                <label for="review">@Localizer["YourReview"]:</label>
+                <textarea class="form-control" id="review" asp-for="Text" rows="5"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="rating">@Localizer["YourRating"]:</label>
+                <select class="form-control" asp-for="Rating">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            @if (Model != null && Model.GetType() != typeof(string) && Model.ImageUrl.Length > 0)
+            {
+                <div class="uploaded-img-container">
+                    <figure class="figure">
+                        <img src=@Model.ImageUrl.Replace("http://", "https://" ) class="figure-img img-fluid rounded" alt="review image" style="max-height:250px;">
+                        <figcaption class="figure-caption">The uploaded image</figcaption>
+                    </figure>
+                    <br/>
+                    <button type="button" id="delete-img-btn" class="btn btn-danger">Delete image</button>
+                </div>
+            }
+            <div class="form-group">
+                <label for="tags">@Localizer["Tags"]:</label>
+                <select class="form-control" id="tags" asp-for="Tags" multiple="multiple"></select>
+            </div>
+            <label>@Localizer["AddImage"]:</label>
+            <div id="myDropzone" class="dropzone"></div>
+            <input type="hidden" id="hiddenFieldForImageUrl" asp-for="ImageUrl" />
+            @if (Model != null)
+            {
+                <input type="hidden" name="ReviewId" value="@Model.Id" />
+            }
+            <button type="submit" class="btn btn-primary">@Localizer["Submit"]</button>
+        </form>
+    </div>
+
+</body>
+<script>
+    
+    window.onload = async function () {
+        let tags = [];
+        tags = await getTagList();
+        $('#tags').select2({
+            tags: true,
+            data: tags,
+            tokenSeparators: [','],
+            placeholder: 'Select tags...'
+        });
+    }
+
+    async function getTagList() {
+        let response = await fetch('/Tag/GetAllTags/', {
+            method: 'GET',
+        });
+        return response.json();
+    }
+
+    Dropzone.autoDiscover = false;
+
+    var myDropzone = new Dropzone("#myDropzone", {
+        url: "/upload",
+        maxFiles: 1,
+        acceptedFiles: "image/*",
+        addRemoveLinks: true,
+        success: function (file, response) {
+            alert('The image was added');
+            $('#hiddenFieldForImageUrl').val(response);
+        },
+        error: function () {
+            alert('Error at downloading image');
+        }
+    });
+
+    document.getElementById('delete-img-btn').addEventListener('click', function () {
+        document.getElementById("hiddenFieldForImageUrl").value = "";
+        var imgContainer = document.querySelector(".uploaded-img-container");
+        if (imgContainer) {
+            imgContainer.remove();
+        }
+    });
+
+
+</script>

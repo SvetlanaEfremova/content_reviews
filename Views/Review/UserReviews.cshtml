@@ -1,0 +1,181 @@
+﻿@model course_project.Models.UserReviewsViewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    var cultureItems = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "en-US", Text = "English" },
+        new SelectListItem { Value = "ru-RU", Text = "Русский" }
+    };
+}
+
+@if (User.IsInRole("Admin"))
+{
+    <h2>@Localizer["ReviewsBy"] @Model.UserName</h2>
+}
+else
+{
+    <h2>@Localizer["MyReviews"]</h2>
+}
+
+<style>
+    .table .form-container {
+        display: flex;
+        gap: 10px;
+        max-width:100%;
+    }
+    .form-container {
+        display: flex;
+        gap: 10px;
+    }
+</style>
+@if (Model.UserReviews.Count != 0)
+{
+    <select id="sortingOption">
+        <option value="ContentNameAsc">@Localizer["ContentNameAsc"]</option>
+        <option value="ContentNameDesc">@Localizer["ContentNameDesc"]</option>
+        <option value="RatingAsc">@Localizer["RatingAsc"]</option>
+        <option value="RatingDesc">@Localizer["RatingDesc"]</option>
+        <option value="ReviewDateAsc">@Localizer["ReviewDateAsc"]</option>
+        <option value="ReviewDateDesc">@Localizer["ReviewDateDesc"]</option>
+    </select>
+    <select id="filtrationOption">
+        <option value="All">@Localizer["All"]</option>
+        <option value="Video">@Localizer["Video"]</option>
+        <option value="Game">@Localizer["Game"]</option>
+        <option value="Book">@Localizer["Book"]</option>
+    </select>
+
+    <table class="table" id="ReviewsTable">
+        <thead>
+            <tr>
+                <th>@Localizer["ContentName"]</th>
+                <th>@Localizer["Date"]</th>
+                <th>@Localizer["Category"]</th>
+                <th>@Localizer["Rating"]</th>
+                <th>@Localizer["Actions"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var review in Model.UserReviews)
+            {
+                <tr>
+                    <td>@review.ContentName</td>
+                    <td>@review.Date</td>
+                    <td>@review.Category</td>
+                    <td>@review.Rating</td>
+                    <td>
+                        <div class="form-container">
+                            <form asp-action="ViewReview" asp-controller="Review" method="get">
+                                <input type="hidden" name="reviewId" value="@(@review.Id)" />
+                                <button type="submit" class="btn btn-success">@Localizer["View"]</button>
+                            </form>
+                            <form asp-action="MakeReview" asp-controller="Review" method="post">
+                                <input type="hidden" name="reviewId" value=@review.Id />
+                                <button type="submit" class="btn btn-primary">@Localizer["Edit"]</button>
+                            </form>
+                            <form class="delete-review-form">
+                                <button type="submit" class="btn btn-danger deleteButton" data-review-id="@review.Id">@Localizer["Delete"]</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <h4>No reviews found</h4>
+}
+<div class="form-container">
+    @if (User.IsInRole("Admin"))
+    {
+        <form asp-action="MakeUserReview" asp-controller="Admin" method="get">
+            <input type="hidden" name="userId" value="@Model.UserId" />
+            <button type="submit" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                </svg>
+                @(Model.UserName == "admin" ? Localizer["AddAReview"] : Localizer["AddAReviewOnBehalfOfUser"])
+                    
+            </button>
+        </form>
+    }
+    else
+    {
+    <form asp-action="MakeReview" asp-controller="Review" method="post">
+        <button type="submit" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                </svg> @Localizer["AddAReview"]
+        </button>
+    </form>
+    }
+    <a href="@Url.Action("Index", "Home")" class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+        </svg> @Localizer["BackToIndexPage"]
+    </a>
+</div>
+@{
+    var targetUrl = User.IsInRole("Admin") ? "/Admin/UserReviews" : "/Review/UserReviews";
+    var userId = @Model.UserId;
+}
+
+<script>
+    function updateTable() {
+        const sortingValue = document.getElementById('sortingOption').value;
+        const filtrationValue = document.getElementById('filtrationOption').value;
+        let url = "@targetUrl";
+        let userId = "@userId";
+        fetch(`${url}?userId=${userId}&sorting=${sortingValue}&category=${filtrationValue}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.text())
+            .then(html => {
+                const newTable = document.createElement('div');
+                newTable.innerHTML = html;
+                const oldTable = document.getElementById('ReviewsTable');
+                if (oldTable) {
+                    const newTableElement = newTable.querySelector('#ReviewsTable');
+                    if (newTableElement) {
+                        oldTable.parentNode.replaceChild(newTableElement, oldTable);
+                    } else {
+                        oldTable.innerHTML = "<tr><td>No results found</td></tr>"; 
+                    }
+                } else {
+                    console.error('Old table element not found.');
+                }
+            })
+
+    }
+
+    document.getElementById('sortingOption').addEventListener('change', updateTable);
+    document.getElementById('filtrationOption').addEventListener('change', updateTable);
+
+let forms = document.querySelectorAll(".delete-review-form");
+forms.forEach(form => {
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        let reviewId = this.querySelector(".deleteButton").getAttribute("data-review-id");
+
+        fetch('/Review/DeleteReview?ReviewId=' + reviewId, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    console.error('Failed to delete review');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+});
+
+</script>
