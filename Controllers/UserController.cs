@@ -1,5 +1,6 @@
 ﻿using CloudinaryDotNet.Actions;
 using course_project.Models;
+using course_project.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,14 @@ namespace course_project.Controllers
         private readonly SignInManager<User> signInManager;
 
         private readonly UserManager<User> userManager;
-        public UserController(UserManager<User> userManager, SignInManager<User> signInManager)
+
+        private readonly UserService userService;
+
+        public UserController(UserManager<User> userManager, SignInManager<User> signInManager, UserService userService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.userService = userService;
         }
 
         [HttpGet]
@@ -34,43 +39,10 @@ namespace course_project.Controllers
         [HttpPost]
         public async Task<IActionResult> SignUp(RegisterViewModel model)
         {
-            var admin = new User 
-            {
-                UserName = "admin@mail.ru", 
-                Name = "admin",
-                Email = "admin@mail.ru",
-                IsBlocked = false
-            };
-            var adminUserCreated = await userManager.CreateAsync(admin, "admin");
-
-            if (adminUserCreated.Succeeded)
-            {
-                await userManager.AddToRoleAsync(admin, "Admin");
-            }
-
-            if (!CheckNewUserData(model)) return RedirectToAction("SignUp", "LogIn");
-            var user = CreateNewUser(model);
+            if (!userService.CheckNewUserData(model)) return RedirectToAction("SignUp", "LogIn");
+            var user = userService.CreateNewUser(model);
             var result = await userManager.CreateAsync(user, model.Password);
-
             return await GetSignUpResult(result, user);
-        }
-
-        private bool CheckNewUserData(RegisterViewModel model)
-        {
-            return model != null && !string.IsNullOrEmpty(model.Email)
-                && !string.IsNullOrEmpty(model.Name) && !string.IsNullOrEmpty(model.Password);
-        }
-
-        private User CreateNewUser(RegisterViewModel model)
-        {
-            return new User
-            {
-                UserName = model.Email,
-                Name = model.Name,
-                Email = model.Email,
-                IsBlocked = false,
-                RegistrationDate = DateTime.Now,
-            };
         }
 
         private async Task<IActionResult> GetSignUpResult(IdentityResult result, User user)
@@ -86,16 +58,10 @@ namespace course_project.Controllers
         [HttpPost]
         public async Task<IActionResult> LogIn(LogInViewModel model)
         {
-            if (!CheckUserLoginData(model)) return RedirectToAction("LogIn", "User");
+            if (!userService.CheckUserLoginData(model)) return RedirectToAction("LogIn", "User");
             var user = await userManager.FindByEmailAsync(model.Email);
             if (user == null) return RedirectToAction("LogIn", "User");
             else return await LoginUser(user, model);
-        }
-
-        private bool CheckUserLoginData(LogInViewModel model)
-        {
-            return model != null && !string.IsNullOrEmpty(model.Email)
-                    && !string.IsNullOrEmpty(model.Password);
         }
 
         private async Task<IActionResult> LoginUser(User user, LogInViewModel model)
@@ -187,6 +153,5 @@ namespace course_project.Controllers
             if (createUserResult.Succeeded) await userManager.AddLoginAsync(user, info);
             return user;
         }
-
     }
 }

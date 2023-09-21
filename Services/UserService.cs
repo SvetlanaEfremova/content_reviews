@@ -33,6 +33,43 @@ namespace course_project.Services
             this.actionContextAccessor = actionContextAccessor;
         }
 
+        public User CreateNewUser(RegisterViewModel model)
+        {
+            return new User
+            {
+                UserName = model.Email,
+                Name = model.Name,
+                Email = model.Email,
+                IsBlocked = false,
+                RegistrationDate = DateTime.Now,
+            };
+        }
+
+        public bool CheckNewUserData(RegisterViewModel model)
+        {
+            return model != null && !string.IsNullOrEmpty(model.Email)
+                && !string.IsNullOrEmpty(model.Name) && !string.IsNullOrEmpty(model.Password);
+        }
+
+        private async Task CreateAdmin()
+        {
+            var admin = new User
+            {
+                UserName = "admin@mail.ru",
+                Name = "admin",
+                Email = "admin@mail.ru",
+                IsBlocked = false
+            };
+            var adminUserCreated = await userManager.CreateAsync(admin, "admin");
+            if (adminUserCreated.Succeeded) await userManager.AddToRoleAsync(admin, "Admin");
+        }
+
+        public bool CheckUserLoginData(LogInViewModel model)
+        {
+            return model != null && !string.IsNullOrEmpty(model.Email)
+                    && !string.IsNullOrEmpty(model.Password);
+        }
+
         public async Task<List<User>> GetUsersList(string sorting)
         {
             IQueryable<User> query = dbcontext.Users;
@@ -51,23 +88,18 @@ namespace course_project.Services
                 default:
                     throw new ArgumentException("Invalid sort by parameter");
             }
-
             return await query.ToListAsync();
         }
 
         public void ParseSortString(string sortString, out string sortBy, out string direction)
         {
             var match = Regex.Match(sortString, @"^(.+?)(Asc|Desc)$", RegexOptions.IgnoreCase);
-
             if (match.Success)
             {
                 sortBy = match.Groups[1].Value;
                 direction = match.Groups[2].Value;
             }
-            else
-            {
-                throw new ArgumentException("Invalid sort string");
-            }
+            else throw new ArgumentException("Invalid sort string");
         }
 
         public async Task<IActionResult> DeleteSelectedUsers(SelectedUsersModel model, string currentUserId)
@@ -121,12 +153,17 @@ namespace course_project.Services
             if (user == null) return;
             user.IsBlocked = status;
             await userManager.UpdateAsync(user);
+            await LogUserOut(user);
+        }
+
+        private async Task LogUserOut(User user)
+        {
             if (user.IsBlocked)
             {
                 await userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
                 await userManager.UpdateSecurityStampAsync(user);
             }
-            else 
+            else
             {
                 await userManager.SetLockoutEndDateAsync(user, null);
                 await userManager.ResetAccessFailedCountAsync(user);
