@@ -7,9 +7,12 @@ namespace course_project.Services
     {
         private readonly ApplicationDbContext dbcontext;
 
-        public CommentService(ApplicationDbContext dbcontext) 
+        private readonly ReviewService reviewService;
+
+        public CommentService(ApplicationDbContext dbcontext, ReviewService reviewService) 
         { 
             this.dbcontext = dbcontext;
+            this.reviewService = reviewService;
         }
 
         public async Task CreateNewComment(CommentViewModel model, string userName)
@@ -21,6 +24,7 @@ namespace course_project.Services
                 Author = userName,
             };
             await SaveCommentInDB(comment);
+            reviewService.IndexReviews();
         }
 
         private async Task SaveCommentInDB(Comment comment)

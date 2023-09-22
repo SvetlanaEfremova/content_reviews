@@ -132,8 +132,14 @@
   <data name="Category" xml:space="preserve">
     <value>Category</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Comments</value>
+  </data>
   <data name="Delete" xml:space="preserve">
     <value>Delete</value>
+  </data>
+  <data name="Dislike" xml:space="preserve">
+    <value>Dislike</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>Edit</value>
@@ -143,6 +149,9 @@
   </data>
   <data name="Game" xml:space="preserve">
     <value>Games</value>
+  </data>
+  <data name="Like" xml:space="preserve">
+    <value>Like</value>
   </data>
   <data name="MovieSeries" xml:space="preserve">
     <value>Movies/Series</value>

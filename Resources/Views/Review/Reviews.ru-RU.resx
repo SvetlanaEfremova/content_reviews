@@ -129,6 +129,9 @@
   <data name="Category" xml:space="preserve">
     <value>Категория</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Комментарии</value>
+  </data>
   <data name="Dislike" xml:space="preserve">
     <value>Поставить дизлайк</value>
   </data>

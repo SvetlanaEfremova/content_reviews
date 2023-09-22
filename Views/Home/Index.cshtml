@@ -13,10 +13,10 @@
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.min.js"></script>
 <style>
-    #wordCloud text:hover {
-    cursor: pointer;
-    fill: #ff7f0e;
-    text-align: left;
+#wordCloud text:hover {
+cursor: pointer;
+fill: #ff7f0e;
+text-align: left;
 }
 
 #wordCloud {
@@ -30,8 +30,8 @@
 .card {
     max-width: 100%; 
     box-sizing: border-box;
-        width: 280px;
-        min-height: 200px;
+    width: 280px;
+    min-height: 200px;
 }
 
 .container-fluid {
@@ -54,59 +54,49 @@
         margin: 10px 5px;
     }
 }
-
 </style>
-
-
 <h2 style="text-align:center; margin-top:20px;"><span>@Localizer["ReadAddReviews"]</span></h2>
-    
-     <div class="container-fluid">
-          <div class="container-element">
-    <h3>@Localizer["Tags"]</h3>
-     <svg id="wordCloud" max-width="300" height="600"></svg>
-     </div>
-     <div class="container-element">
-
-
-
-     <h3>@Localizer["TopReviews"]</h3>
+<div class="container-fluid">
+    <div class="container-element">
+        <h3>@Localizer["Tags"]</h3>
+        <svg id="wordCloud" max-width="300" height="600"></svg>
+    </div>
+    <div class="container-element">
+        <h3>@Localizer["TopReviews"]</h3>
         <div id="myCarousel1" class="carousel slide" data-bs-ride="carousel">
-        <ol class="carousel-indicators">
-            @for (var i = 0; i < Model.TopReviews.Count; i++)
-            {
-                <li data-bs-target="#myCarousel1" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")"></li>
-            }
-        </ol>
-
-    <div class="carousel-inner">
-        
-        @for (var i = 0; i < Model.TopReviews.Count; i++)
-        {
-            var review = Model.TopReviews[i];
-            <div class="carousel-item @(i == 0 ? "active" : "")">
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">@review.ContentName</h5>
-                                <h6 class="card-subtitle mb-2 text-body-secondary">@Localizer["By"]: @review.Author @review.User.Likes</h6>
-                                <h6 class="card-subtitle mb-2 text-body-secondary">@review.Date</h6>
-                                <p class="card-text">@review.Text</p>
-                                <p><strong>@Localizer["Rating"]:</strong> @review.Rating</p>
+            <ol class="carousel-indicators">
+                @for (var i = 0; i < Model.TopReviews.Count; i++)
+                {
+                    <li data-bs-target="#myCarousel1" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")"></li>
+                }
+            </ol>
+            <div class="carousel-inner">
+                @for (var i = 0; i < Model.TopReviews.Count; i++)
+                {
+                    var review = Model.TopReviews[i];
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">@review.ContentName</h5>
+                                    <h6 class="card-subtitle mb-2 text-body-secondary">@Localizer["By"]: @review.Author (@review.User.Likes)</h6>
+                                    <h6 class="card-subtitle mb-2 text-body-secondary">@review.Date</h6>
+                                    <p class="card-text">@review.Text</p>
+                                    <p><strong>@Localizer["Rating"]:</strong> @review.Rating</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                }
             </div>
-        }
+            <a class="carousel-control-prev" href="#myCarousel1" role="button" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#myCarousel1" role="button" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </a>
+        </div>
     </div>
-    <a class="carousel-control-prev" href="#myCarousel1" role="button" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#myCarousel1" role="button" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </a>
-</div>
-    </div>
-
     <div class="container-element">
         <h3>@Localizer["LatestReviews"]</h3>
         <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -116,25 +106,23 @@
                     <li data-bs-target="#myCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")"></li>
                 }
             </ol>
-
             <div class="carousel-inner">
-                        @for (var i = 0; i < Model.LatestReviews.Count; i++)
-                        {
-                            var review = Model.LatestReviews[i];
-                            <div class="carousel-item @(i == 0 ? "active" : "")">
-                                <div class="card" style="width: 18rem;">
-                                    <div class="card-body">
-                                        <h5 class="card-title">@review.ContentName</h5>
-                                        <h6 class="card-subtitle mb-2 text-body-secondary">@Localizer["By"]: @review.Author @review.User.Likes</h6>
-                                        <h6 class="card-subtitle mb-2 text-body-secondary">@review.Date</h6>
-                                        <p class="card-text">@review.Text</p>
-                                        <p><strong>@Localizer["Rating"]:</strong> @review.Rating</p>
-                                    </div>
-                                </div>
+                @for (var i = 0; i < Model.LatestReviews.Count; i++)
+                {
+                    var review = Model.LatestReviews[i];
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">@review.ContentName</h5>
+                                <h6 class="card-subtitle mb-2 text-body-secondary">@Localizer["By"]: @review.Author (@review.User.Likes)</h6>
+                                <h6 class="card-subtitle mb-2 text-body-secondary">@review.Date</h6>
+                                <p class="card-text">@review.Text</p>
+                                <p><strong>@Localizer["Rating"]:</strong> @review.Rating</p>
                             </div>
-                        }
+                        </div>
+                    </div>
+                }
             </div>
-
             <a class="carousel-control-prev" href="#myCarousel" role="button" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Previous</span>
@@ -146,66 +134,5 @@
         </div>
     </div>
 </div>
-<script>
-    var tags = [];
-
-    var layout = d3.layout.cloud()
-        .padding(7)
-        .rotate(function () { return ~~(Math.random() * 2) * 90; })
-        .fontSize(function (d) { return d.size; })
-        .on("end", draw);
-
-    window.onload = async function () {
-        tags = await getTagList();
-        console.log(tags);
-        tags = tags.map(function (tag) {
-            return {
-                text: tag,
-                size: getRandomSize(10, 50)
-            };
-        });
-        layout.words(tags);
-        layout.start();
-    };
-
-    function getRandomSize(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    async function getTagList() {
-        let response = await fetch('/Tag/GetAllTags/', {
-            method: 'GET',
-        });
-        return response.json();
-    }
-
-    function draw(tags) {
-        d3.select("#wordCloud")
-            .append("g")
-            .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
-            .selectAll("text")
-            .data(tags)
-            .enter().append("text")
-            .style("font-size", function (d) { return d.size + "px"; })
-            .style("fill", "#69b3a2")
-            .attr("text-anchor", "start")
-            .attr("transform", function (d) {
-                return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-            })
-            .text(function (d) { return d.text; })
-            .on("click", function (d) {
-                var form = document.createElement("form");
-                form.method = "get";
-                form.action = "/Review/Reviews";
-
-                var input = document.createElement("input");
-                input.type = "hidden"; 
-                input.name = "searchQuery"; 
-                input.value = d.text;
-                form.appendChild(input);
-                document.body.appendChild(form);
-                form.submit();
-                document.body.removeChild(form);
-            });
-    }
-</script>
+<script src="~/js/Home/Index.js"></script>
+<script src="~/js/theme-toggle.js"></script>

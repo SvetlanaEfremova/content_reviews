@@ -121,7 +121,6 @@ else
     var targetUrl = User.IsInRole("Admin") ? "/Admin/UserReviews" : "/Review/UserReviews";
     var userId = @Model.UserId;
 }
-
 <script>
     function updateTable() {
         const sortingValue = document.getElementById('sortingOption').value;
@@ -177,5 +176,4 @@ forms.forEach(form => {
             });
     });
 });
-
 </script>

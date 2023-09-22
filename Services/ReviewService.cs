@@ -68,8 +68,8 @@ namespace course_project.Services
         {
             var luceneIndexDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LuceneIndexes");
             var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
-            var indexWriter = new IndexWriter(FSDirectory.Open(luceneIndexDirectory), analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
-            foreach (var review in dbcontext.Reviews.Include(r => r.Tags))
+            var indexWriter = new IndexWriter(FSDirectory.Open(luceneIndexDirectory), analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED);
+            foreach (var review in dbcontext.Reviews.Include(r => r.Tags).Include(r => r.Comments))
             {
                 var document = new Document();
                 document.Add(new Field("Id", review.Id.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
@@ -77,6 +77,8 @@ namespace course_project.Services
                 document.Add(new Field("Text", review.Text, Field.Store.YES, Field.Index.ANALYZED));
                 var tagsString = string.Join(" ", review.Tags.Select(t => t.Name));
                 document.Add(new Field("Tags", tagsString, Field.Store.YES, Field.Index.ANALYZED));
+                var commentsString = string.Join(" ", review.Comments.Select(c => c.Text));
+                document.Add(new Field("Comments", commentsString, Field.Store.YES, Field.Index.ANALYZED));
                 indexWriter.AddDocument(document);
             }
             indexWriter.Close();
