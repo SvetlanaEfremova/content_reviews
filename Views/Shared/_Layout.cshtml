@@ -110,10 +110,10 @@
                     var currentCultureName = requestCultureFeature.RequestCulture.Culture.Name;
                 }
                 <div style="display: flex; align-items: center;">
-                    <div class="search-line-container" style="width: 50%;">
+                    <div class="search-line-container" style="width: 100%;">
                         <form action="/Review/Reviews" method="get">
                             <div class="input-group">
-                                <input type="text" class="form-control" name="searchQuery" placeholder="@Localizer["SearchForReviews"]">
+                                <input type="text" class="form-control" name="searchQuery" placeholder="@Localizer["SearchForReviews"]" style="min-width:250px;">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="submit">@Localizer["Search"]</button>
                                 </div>
@@ -121,7 +121,7 @@
                         </form>
                     </div>
                     <form id="selectLanguage" asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@Context.Request.Path" method="post" class="form-inline">
-                        <select class="form-select" name="culture" onchange="this.form.submit();" asp-for="@currentCultureName">
+                        <select class="form-select" name="culture" onchange="this.form.submit();" asp-for="@currentCultureName" style="min-width:110px;">
                             <option value="en-US">English</option>
                             <option value="ru-RU">Русский</option>
                         </select>

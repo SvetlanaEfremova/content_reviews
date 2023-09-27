@@ -17,14 +17,20 @@ namespace course_project.Services
 
         public async Task CreateNewComment(CommentViewModel model, string userName)
         {
-            var comment = new Comment
+            var review = await reviewService.GetReviewById(model.ReviewId);
+            if (review != null)
             {
-                ReviewId = model.ReviewId,
-                Text = model.Text,
-                Author = userName,
-            };
-            await SaveCommentInDB(comment);
-            reviewService.IndexReviews();
+                var comment = new Comment
+                {
+                    ReviewId = model.ReviewId,
+                    Review = review,
+                    Text = model.Text,
+                    Author = userName,
+                };
+                review.Comments.Add(comment);
+                await SaveCommentInDB(comment);
+                reviewService.IndexReviews();
+            }
         }
 
         private async Task SaveCommentInDB(Comment comment)

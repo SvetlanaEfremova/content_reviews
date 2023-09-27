@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sitemanifest>
+  <IisApp path="C:\C-sharp lessons\Itransition internship\course_project\course_project\obj\Release\net6.0\PubTmp\Out\" />
+  <dbfullsql path="C:\C-sharp lessons\Itransition internship\course_project\course_project\obj\Release\net6.0\PubTmp\EFSQLScripts\course_project.Models.ApplicationDbContext.sql" />
+</sitemanifest>

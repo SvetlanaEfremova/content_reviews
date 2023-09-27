@@ -194,7 +194,7 @@ namespace course_project.Services
         private ScoreDoc[] PerformSearch(IndexSearcher searcher, string searchQuery)
         {
             var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
-            var parser = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30, new[] { "Id", "ContentName", "Text", "Tags" }, analyzer);
+            var parser = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30, new[] { "Id", "ContentName", "Text", "Tags", "Comments" }, analyzer);
             var query = parser.Parse(searchQuery);
             return searcher.Search(query, null, 10, Sort.RELEVANCE).ScoreDocs;
         }

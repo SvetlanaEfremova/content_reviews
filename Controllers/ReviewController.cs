@@ -18,7 +18,6 @@ namespace course_project.Controllers
 {
     public class ReviewController : Controller
     {
-        private readonly SignInManager<User> signInManager;
 
         private readonly UserManager<User> userManager;
 
@@ -28,9 +27,8 @@ namespace course_project.Controllers
 
         private readonly ReviewService reviewService;
 
-        public ReviewController(SignInManager<User> signInManager, UserManager<User> userManager, ApplicationDbContext dbcontext, CloudinaryService cloudinaryService, ReviewService reviewService)
+        public ReviewController(UserManager<User> userManager, ApplicationDbContext dbcontext, CloudinaryService cloudinaryService, ReviewService reviewService)
         {
-            this.signInManager = signInManager;
             this.userManager = userManager;
             this.dbcontext = dbcontext;
             this.cloudinaryService = cloudinaryService;
@@ -71,7 +69,6 @@ namespace course_project.Controllers
             {
                 using var stream = file.OpenReadStream();
                 var url = cloudinaryService.UploadImage(stream);
-                Console.WriteLine(url);
                 return Ok(url);
             }
             return BadRequest("Error ocurred while downloading image");
